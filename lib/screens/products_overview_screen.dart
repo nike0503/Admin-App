@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import './edit_product_screen.dart';
 import '../providers/departments.dart';
+import '../providers/login.dart';
 import '../widgets/product_item.dart';
 
 class ProductOverviewScreen extends StatefulWidget {
@@ -17,6 +18,7 @@ class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
   var ids;
   String catName;
   String deptName;
+  String admin;
 
   @override
   void initState() {
@@ -29,10 +31,11 @@ class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
       setState(() {
         _isLoading = true;
       });
+      admin = Provider.of<SignIn>(context).username;
       ids = ModalRoute.of(context).settings.arguments as List;
       catName = ids[0];
       deptName = ids[1];
-      Provider.of<Departments>(context).getProds(deptName, catName).then((_) {
+      Provider.of<Departments>(context).getProds(admin, deptName, catName).then((_) {
         setState(() {
           _isLoading = false;
         });
@@ -65,25 +68,29 @@ class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
           ? Center(
               child: CircularProgressIndicator(),
             )
-          : Column(
-              children: <Widget>[
-                SizedBox(height: 10),
-                Expanded(
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    padding: EdgeInsets.all(8),
-                    itemCount: dept.products.length,
-                    itemBuilder: (ctx, i) => ChangeNotifierProvider.value(
-                      value: dept.products[i],
-                      child: ProductItem(
-                        catName: catName,
-                        deptName: deptName,
+          : dept.products.length == 0
+              ? Center(
+                  child: Text('No Products in this category'),
+                )
+              : Column(
+                  children: <Widget>[
+                    SizedBox(height: 10),
+                    Expanded(
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        padding: EdgeInsets.all(8),
+                        itemCount: dept.products.length,
+                        itemBuilder: (ctx, i) => ChangeNotifierProvider.value(
+                          value: dept.products[i],
+                          child: ProductItem(
+                            catName: catName,
+                            deptName: deptName,
+                          ),
+                        ),
                       ),
                     ),
-                  ),
+                  ],
                 ),
-              ],
-            ),
     );
   }
 }

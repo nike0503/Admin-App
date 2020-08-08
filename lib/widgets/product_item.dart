@@ -1,3 +1,4 @@
+import 'package:admin/providers/departments.dart';
 import 'package:admin/screens/edit_product_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -31,7 +32,7 @@ class ProductItem extends StatelessWidget {
               leading: CircleAvatar(
                 child: Padding(
                   padding: EdgeInsets.all(5),
-                  child: Image.network(
+                  child: product.imageUrl == '' ? Text('') : Image.network(
                     product.imageUrl,
                     width: double.infinity,
                     fit: BoxFit.contain,
@@ -51,13 +52,40 @@ class ProductItem extends StatelessWidget {
                       'Out of stock',
                       style: TextStyle(fontSize: 15),
                     ),
-              trailing: IconButton(
-                icon: Icon(Icons.edit),
-                onPressed: () {
-                  Navigator.of(context).pushNamed(EditProductsScreen.routeName,
-                      arguments: [product.name, catName, deptName]);
-                },
-                color: Theme.of(context).primaryColor,
+              trailing: Container(
+                width: 100,
+                child: Row(
+                  children: <Widget>[
+                    IconButton(
+                      icon: Icon(Icons.edit),
+                      onPressed: () {
+                        Navigator.of(context).pushNamed(
+                            EditProductsScreen.routeName,
+                            arguments: [product.name, catName, deptName]);
+                      },
+                      color: Theme.of(context).primaryColor,
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.delete),
+                      onPressed: () async {
+                        try {
+                          await Provider.of<Departments>(context, listen: false)
+                              .deleteProduct(product.name, catName, deptName);
+                        } catch (error) {
+                          // scaffold.showSnackBar(
+                          //   SnackBar(
+                          //     content: Text(
+                          //       'Deleting failed!',
+                          //       textAlign: TextAlign.center,
+                          //     ),
+                          //   ),
+                          // );
+                        }
+                      },
+                      color: Theme.of(context).errorColor,
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

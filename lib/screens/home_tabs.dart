@@ -1,10 +1,14 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 
 import './home_screen.dart';
 import './orders_screen.dart';
 import './profile_screen.dart';
 import '../providers/orders.dart';
+import '../providers/login.dart';
 
 class HomeTabs extends StatefulWidget {
   @override
@@ -12,6 +16,12 @@ class HomeTabs extends StatefulWidget {
 }
 
 class _HomeTabsState extends State<HomeTabs> {
+  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
+      GlobalKey<RefreshIndicatorState>();
+
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  String admin;
   List<Map<String, Object>> pages;
   int _selectedPageIndex = 0;
   var _isInit = true;
@@ -42,7 +52,8 @@ class _HomeTabsState extends State<HomeTabs> {
       setState(() {
         _isLoading = true;
       });
-      Provider.of<Orders>(context).fetchAndSetOrders().then((_) {
+      admin = Provider.of<SignIn>(context).username;
+      Provider.of<Orders>(context).fetchAndSetOrders(admin).then((_) {
         setState(() {
           _isLoading = false;
         });
@@ -50,6 +61,34 @@ class _HomeTabsState extends State<HomeTabs> {
     }
     _isInit = false;
     super.didChangeDependencies();
+  }
+
+  Future<void> _handleRefresh() {
+    final Completer<void> completer = Completer<void>();
+
+    Timer(const Duration(seconds: 3), () {
+      completer.complete();
+    });
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    Provider.of<Orders>(context).fetchAndSetOrders(admin).then((_) {
+      setState(() {
+        _isLoading = false;
+      });
+    });
+
+    return completer.future.then<void>((_) {
+      _scaffoldKey.currentState?.showSnackBar(SnackBar(
+          content: const Text('Refresh complete'),
+          action: SnackBarAction(
+              label: 'RETRY',
+              onPressed: () {
+                _refreshIndicatorKey.currentState.show();
+              })));
+    });
   }
 
   void _selectPage(int index) {
@@ -60,19 +99,37 @@ class _HomeTabsState extends State<HomeTabs> {
 
   @override
   Widget build(BuildContext context) {
+    final auth = Provider.of<SignIn>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          pages[_selectedPageIndex]['title'],
+          _selectedPageIndex != 2
+              ? pages[_selectedPageIndex]['title']
+              : auth.username,
           textAlign: TextAlign.center,
         ),
+        actions: <Widget>[
+          Builder(builder: (BuildContext context) {
+            return FlatButton(
+              onPressed: () {
+                auth.signOut();
+              },
+              child: Text('Sign Out'),
+            );
+          })
+        ],
         centerTitle: true,
       ),
       body: _isLoading
           ? Center(
               child: CircularProgressIndicator(),
             )
-          : pages[_selectedPageIndex]['page'],
+          : LiquidPullToRefresh(
+              color: Colors.teal,
+              onRefresh: _handleRefresh,
+              showChildOpacityTransition: false,
+              child: pages[_selectedPageIndex]['page'],
+            ),
       bottomNavigationBar: BottomNavigationBar(
         elevation: 5,
         currentIndex: _selectedPageIndex,

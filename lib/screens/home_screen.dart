@@ -35,7 +35,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Text(
                       'Sales(in ₹)',
                       textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.white, fontSize: 20),
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: (MediaQuery.of(context).size.height -
+                                AppBar().preferredSize.height) *
+                            0.03,
+                      ),
                     ),
                   ),
                   Expanded(
@@ -49,12 +54,22 @@ class _HomeScreenState extends State<HomeScreen> {
                               Text(
                                 'Today',
                                 textAlign: TextAlign.center,
-                                style: TextStyle(fontSize: 18),
+                                style: TextStyle(
+                                  fontSize:
+                                      (MediaQuery.of(context).size.height -
+                                              AppBar().preferredSize.height) *
+                                          0.025,
+                                ),
                               ),
                               Text(
                                 '₹${ords.saleToday}',
                                 textAlign: TextAlign.center,
-                                style: TextStyle(fontSize: 24),
+                                style: TextStyle(
+                                  fontSize:
+                                      (MediaQuery.of(context).size.height -
+                                              AppBar().preferredSize.height) *
+                                          0.03,
+                                ),
                               ),
                             ],
                           ),
@@ -71,12 +86,22 @@ class _HomeScreenState extends State<HomeScreen> {
                               Text(
                                 'Total',
                                 textAlign: TextAlign.center,
-                                style: TextStyle(fontSize: 18),
+                                style: TextStyle(
+                                  fontSize:
+                                      (MediaQuery.of(context).size.height -
+                                              AppBar().preferredSize.height) *
+                                          0.025,
+                                ),
                               ),
                               Text(
                                 '₹${ords.totalSale}',
                                 textAlign: TextAlign.center,
-                                style: TextStyle(fontSize: 24),
+                                style: TextStyle(
+                                  fontSize:
+                                      (MediaQuery.of(context).size.height -
+                                              AppBar().preferredSize.height) *
+                                          0.03,
+                                ),
                               ),
                             ],
                           ),
@@ -108,7 +133,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Text(
                       'Orders',
                       textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.white, fontSize: 20),
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: (MediaQuery.of(context).size.height -
+                                AppBar().preferredSize.height) *
+                            0.03,
+                      ),
                     ),
                   ),
                   Expanded(
@@ -122,12 +152,22 @@ class _HomeScreenState extends State<HomeScreen> {
                               Text(
                                 'Cancelled',
                                 textAlign: TextAlign.center,
-                                style: TextStyle(fontSize: 18),
+                                style: TextStyle(
+                                  fontSize:
+                                      (MediaQuery.of(context).size.height -
+                                              AppBar().preferredSize.height) *
+                                          0.025,
+                                ),
                               ),
                               Text(
                                 '${ords.cancelledOrders.length}',
                                 textAlign: TextAlign.center,
-                                style: TextStyle(fontSize: 24),
+                                style: TextStyle(
+                                  fontSize:
+                                      (MediaQuery.of(context).size.height -
+                                              AppBar().preferredSize.height) *
+                                          0.03,
+                                ),
                               ),
                             ],
                           ),
@@ -144,12 +184,22 @@ class _HomeScreenState extends State<HomeScreen> {
                               Text(
                                 'Pending',
                                 textAlign: TextAlign.center,
-                                style: TextStyle(fontSize: 18),
+                                style: TextStyle(
+                                  fontSize:
+                                      (MediaQuery.of(context).size.height -
+                                              AppBar().preferredSize.height) *
+                                          0.025,
+                                ),
                               ),
                               Text(
                                 '${ords.pendingOrders.length}',
                                 textAlign: TextAlign.center,
-                                style: TextStyle(fontSize: 24),
+                                style: TextStyle(
+                                  fontSize:
+                                      (MediaQuery.of(context).size.height -
+                                              AppBar().preferredSize.height) *
+                                          0.03,
+                                ),
                               ),
                             ],
                           ),
@@ -166,12 +216,22 @@ class _HomeScreenState extends State<HomeScreen> {
                               Text(
                                 'Ongoing',
                                 textAlign: TextAlign.center,
-                                style: TextStyle(fontSize: 18),
+                                style: TextStyle(
+                                  fontSize:
+                                      (MediaQuery.of(context).size.height -
+                                              AppBar().preferredSize.height) *
+                                          0.025,
+                                ),
                               ),
                               Text(
-                                '${ords.dispatchedOrders.length}',
+                                '${ords.dispatchedOrders.length + ords.placedOrders.length}',
                                 textAlign: TextAlign.center,
-                                style: TextStyle(fontSize: 24),
+                                style: TextStyle(
+                                  fontSize:
+                                      (MediaQuery.of(context).size.height -
+                                              AppBar().preferredSize.height) *
+                                          0.03,
+                                ),
                               ),
                             ],
                           ),

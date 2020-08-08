@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import './edit_department_screen.dart';
 import '../providers/departments.dart';
+import '../providers/login.dart';
 import '../widgets/department_item.dart';
 
 class DepartmentOverviewScreen extends StatefulWidget {
@@ -14,7 +16,7 @@ class DepartmentOverviewScreen extends StatefulWidget {
 class _DepartmentOverviewScreenState extends State<DepartmentOverviewScreen> {
   var _isLoading = false;
   var _isInit = true;
-
+  String admin;
   @override
   void initState() {
     super.initState();
@@ -26,7 +28,8 @@ class _DepartmentOverviewScreenState extends State<DepartmentOverviewScreen> {
       setState(() {
         _isLoading = true;
       });
-      Provider.of<Departments>(context).getDepts().then((_) {
+      admin = Provider.of<SignIn>(context).username;
+      Provider.of<Departments>(context).getDepts(admin).then((_) {
         setState(() {
           _isLoading = false;
         });
@@ -43,23 +46,37 @@ class _DepartmentOverviewScreenState extends State<DepartmentOverviewScreen> {
       appBar: AppBar(
         centerTitle: true,
         title: Text('Departments'),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.add),
+            onPressed: () {
+              Navigator.of(context).pushNamed(
+                EditDepartmentScreen.routeName,
+              );
+            },
+          ),
+        ],
       ),
       backgroundColor: Colors.white60,
       body: _isLoading
           ? Center(
               child: CircularProgressIndicator(),
             )
-          : GridView.builder(
-              itemCount: dept.departments.length,
-              padding: const EdgeInsets.all(10.0),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 1,
-                  childAspectRatio: 5 / 1,
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 10),
-              itemBuilder: (ctx, i) => ChangeNotifierProvider.value(
-                  value: dept.departments[i], child: DepartmentItem()),
-            ),
+          : dept.departments.length == 0
+              ? Center(
+                  child: Text('No Departments added till now'),
+                )
+              : GridView.builder(
+                  itemCount: dept.departments.length,
+                  padding: const EdgeInsets.all(10.0),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 1,
+                      childAspectRatio: 5 / 1,
+                      crossAxisSpacing: 10,
+                      mainAxisSpacing: 10),
+                  itemBuilder: (ctx, i) => ChangeNotifierProvider.value(
+                      value: dept.departments[i], child: DepartmentItem()),
+                ),
     );
   }
 }
